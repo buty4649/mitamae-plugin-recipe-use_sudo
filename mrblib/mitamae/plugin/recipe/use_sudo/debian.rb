@@ -1,14 +1,9 @@
-# sudoを使う
-class Specinfra::Command::Debian::Base::Package
-  class << self
-    alias :__install__ :install
-    def install(package, version=nil, option='')
-      "sudo " + __install__(package, version, option)
+class MItamae::ResourceExecutor::Package
+  alias :__run_command :run_command
+  def run_command(*args)
+    if args.first =~ /apt-get/
+      args[0] = "sudo -p '[local sudo] Password: ' #{args[0]}"
     end
-
-    alias :__remove__ :remove
-    def remove(package, option='')
-      "sudo " + __remove__(package, option)
-    end
+    __run_command(*args)
   end
 end
